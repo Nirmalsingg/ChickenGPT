@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChickenGPT</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Conversation history">
+        <div class="brand-row">
+          <div class="brand-mark" aria-hidden="true">C</div>
+          <div>
+            <h1>ChickenGPT</h1>
+            <p>AI workbench</p>
+          </div>
+        </div>
+
+        <button class="primary-action" id="newChatButton" type="button">+ New chat</button>
+
+        <div class="history-header">
+          <span>Chats</span>
+          <button class="icon-button" id="clearHistoryButton" type="button" title="Clear history">x</button>
+        </div>
+        <nav class="chat-list" id="chatList" aria-label="Saved chats"></nav>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <div class="eyebrow" id="statusLabel">Groq ready</div>
+            <h2 id="chatTitle">Untitled chat</h2>
+          </div>
+          <div class="topbar-actions">
+            <button class="ghost-button" id="exportButton" type="button">Export</button>
+            <button class="ghost-button" id="settingsButton" type="button">Settings</button>
+          </div>
+        </header>
+
+        <section class="settings-panel" id="settingsPanel" aria-label="Chat settings">
+          <label>
+            <span>Mode</span>
+            <select id="modeSelect">
+              <option value="balanced">Balanced</option>
+              <option value="builder">Builder</option>
+              <option value="research">Research</option>
+              <option value="creative">Creative</option>
+            </select>
+          </label>
+          <label>
+            <span>Model</span>
+            <input id="modelInput" value="llama-3.3-70b-versatile" autocomplete="off" />
+          </label>
+          <label>
+            <span>Temperature</span>
+            <input id="temperatureInput" type="range" min="0" max="1.5" value="0.7" step="0.1" />
+          </label>
+          <label>
+            <span>Max tokens</span>
+            <input id="maxTokensInput" type="number" min="128" max="8000" value="1200" />
+          </label>
+          <label class="wide-field">
+            <span>System prompt</span>
+            <textarea id="systemPromptInput" rows="3">You are ChickenGPT, a capable, practical AI assistant. Be direct, useful, and thoughtful.</textarea>
+          </label>
+        </section>
+
+        <section class="messages" id="messages" aria-live="polite"></section>
+
+        <form class="composer" id="composer">
+          <div class="attachment-row" id="attachmentRow"></div>
+          <div class="input-wrap">
+            <button class="tool-button" id="attachButton" type="button" title="Attach text file">+</button>
+            <textarea id="promptInput" rows="1" placeholder="Message ChickenGPT..." autocomplete="off"></textarea>
+            <button class="send-button" id="sendButton" type="submit" title="Send">Send</button>
+          </div>
+          <input id="fileInput" type="file" accept=".txt,.md,.json,.csv,.js,.ts,.html,.css" hidden />
+        </form>
+      </main>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

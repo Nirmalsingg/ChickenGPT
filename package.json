@@ -1,0 +1,21 @@
+{
+  "name": "chickengpt",
+  "version": "1.0.0",
+  "description": "ChickenGPT, a focused AI chat web app with a Groq backend.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "ai",
+    "chat",
+    "groq",
+    "chickengpt"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}
