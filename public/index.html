@@ -4,82 +4,123 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ChickenGPT</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <div class="app-shell">
-      <aside class="sidebar" aria-label="Conversation history">
+      <aside class="sidebar" id="sidebar" aria-label="Conversation history">
         <div class="brand-row">
           <div class="brand-mark" aria-hidden="true">C</div>
           <div>
             <h1>ChickenGPT</h1>
-            <p>AI workbench</p>
+            <p>Production AI chat</p>
           </div>
         </div>
 
-        <button class="primary-action" id="newChatButton" type="button">+ New chat</button>
+        <button class="primary-action" id="newChatButton" type="button">New chat</button>
 
         <div class="history-header">
-          <span>Chats</span>
-          <button class="icon-button" id="clearHistoryButton" type="button" title="Clear history">x</button>
+          <span>Conversations</span>
+          <button class="icon-button" id="closeSidebarButton" type="button" title="Close sidebar">x</button>
         </div>
         <nav class="chat-list" id="chatList" aria-label="Saved chats"></nav>
       </aside>
 
       <main class="workspace">
         <header class="topbar">
-          <div>
+          <button class="icon-button mobile-only" id="openSidebarButton" type="button" title="Open sidebar">Menu</button>
+          <div class="title-block">
             <div class="eyebrow" id="statusLabel">Groq ready</div>
             <h2 id="chatTitle">Untitled chat</h2>
           </div>
           <div class="topbar-actions">
+            <select class="compact-select" id="quickModelSelect" aria-label="Model">
+              <option value="llama-3.3-70b-versatile">Llama 3.3 70B</option>
+              <option value="llama-3.1-8b-instant">Llama 3.1 8B</option>
+              <option value="gemma2-9b-it">Gemma2 9B</option>
+            </select>
+            <button class="ghost-button" id="shareButton" type="button">Share</button>
             <button class="ghost-button" id="exportButton" type="button">Export</button>
             <button class="ghost-button" id="settingsButton" type="button">Settings</button>
           </div>
         </header>
 
-        <section class="settings-panel" id="settingsPanel" aria-label="Chat settings">
-          <label>
-            <span>Mode</span>
-            <select id="modeSelect">
-              <option value="balanced">Balanced</option>
-              <option value="builder">Builder</option>
-              <option value="research">Research</option>
-              <option value="creative">Creative</option>
-            </select>
-          </label>
-          <label>
-            <span>Model</span>
-            <input id="modelInput" value="llama-3.3-70b-versatile" autocomplete="off" />
-          </label>
-          <label>
-            <span>Temperature</span>
-            <input id="temperatureInput" type="range" min="0" max="1.5" value="0.7" step="0.1" />
-          </label>
-          <label>
-            <span>Max tokens</span>
-            <input id="maxTokensInput" type="number" min="128" max="8000" value="1200" />
-          </label>
-          <label class="wide-field">
-            <span>System prompt</span>
-            <textarea id="systemPromptInput" rows="3">You are ChickenGPT, a capable, practical AI assistant. Be direct, useful, and thoughtful.</textarea>
-          </label>
-        </section>
-
         <section class="messages" id="messages" aria-live="polite"></section>
 
         <form class="composer" id="composer">
-          <div class="attachment-row" id="attachmentRow"></div>
-          <div class="input-wrap">
-            <button class="tool-button" id="attachButton" type="button" title="Attach text file">+</button>
-            <textarea id="promptInput" rows="1" placeholder="Message ChickenGPT..." autocomplete="off"></textarea>
-            <button class="send-button" id="sendButton" type="submit" title="Send">Send</button>
+          <div class="drop-zone" id="dropZone">
+            <div class="attachment-row" id="attachmentRow"></div>
+            <div class="input-wrap">
+              <button class="tool-button" id="attachButton" type="button" title="Attach file">+</button>
+              <button class="tool-button" id="voiceButton" type="button" title="Voice input">Mic</button>
+              <textarea id="promptInput" rows="1" placeholder="Message ChickenGPT..." autocomplete="off"></textarea>
+              <button class="send-button" id="sendButton" type="submit">Send</button>
+              <button class="send-button stop-button" id="stopButton" type="button" hidden>Stop</button>
+            </div>
+            <div class="composer-meta">
+              <span id="charCounter">0 characters</span>
+              <span>Enter to send, Shift+Enter for a new line</span>
+            </div>
           </div>
-          <input id="fileInput" type="file" accept=".txt,.md,.json,.csv,.js,.ts,.html,.css" hidden />
+          <input id="fileInput" type="file" accept=".txt,.md,.json,.csv,.js,.ts,.html,.css,image/*" multiple hidden />
         </form>
       </main>
     </div>
 
+    <div class="modal-backdrop" id="settingsModal" aria-hidden="true">
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <header class="modal-header">
+          <div>
+            <p class="eyebrow">Preferences</p>
+            <h2 id="settingsTitle">Settings</h2>
+          </div>
+          <button class="icon-button" id="closeSettingsButton" type="button" title="Close settings">x</button>
+        </header>
+
+        <div class="settings-grid">
+          <label>
+            <span>Theme</span>
+            <select id="themeSelect">
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+            </select>
+          </label>
+          <label>
+            <span>Model</span>
+            <select id="modelSelect">
+              <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile</option>
+              <option value="llama-3.1-8b-instant">llama-3.1-8b-instant</option>
+              <option value="gemma2-9b-it">gemma2-9b-it</option>
+            </select>
+          </label>
+          <label>
+            <span>Temperature <strong id="temperatureValue">0.7</strong></span>
+            <input id="temperatureInput" type="range" min="0" max="2" value="0.7" step="0.1" />
+          </label>
+          <label>
+            <span>Max tokens</span>
+            <input id="maxTokensInput" type="number" min="128" max="8192" value="1200" />
+          </label>
+          <label class="wide-field">
+            <span>System prompt</span>
+            <textarea id="systemPromptInput" rows="5">You are ChickenGPT, a capable, practical AI assistant. Be direct, useful, and thoughtful.</textarea>
+          </label>
+        </div>
+
+        <footer class="modal-footer">
+          <button class="danger-button" id="clearHistoryButton" type="button">Clear all chats</button>
+          <button class="primary-action modal-save" id="saveSettingsButton" type="button">Save settings</button>
+        </footer>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/common.min.js"></script>
     <script src="/app.js"></script>
   </body>
 </html>

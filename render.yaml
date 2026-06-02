@@ -11,3 +11,7 @@ services:
         value: 18.20.8
       - key: GROQ_API_KEY
         sync: false
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 60000
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: 30

@@ -1,8 +1,23 @@
 # ChickenGPT
 
-ChickenGPT is a polished AI chat web app with a tiny Node backend powered by Groq.
+ChickenGPT is a modern vanilla web AI chatbot with a Node.js backend proxy for Groq. It keeps the Groq API key on the server, streams assistant responses to the browser, and stores conversations locally in the user's browser.
 
-## Run it
+## Features
+
+- Responsive ChatGPT-style workspace with dark and light themes
+- Streaming Groq responses with typing indicator and stop generation
+- Markdown rendering for headings, lists, tables, bold, italic, inline code, and code blocks
+- Syntax highlighting through Highlight.js
+- Local chat history with multiple conversations
+- Create, rename, delete, share, and export conversations
+- Export formats: TXT, Markdown, and JSON
+- Message actions: copy, edit user message, regenerate response, retry failed request
+- Settings modal for theme, model, temperature, max tokens, system prompt, and clearing chats
+- File and image upload UI with drag and drop support
+- Browser speech recognition voice input where supported
+- Request validation, duplicate-request prevention, error states, retry actions, and in-memory rate limiting
+
+## Run locally
 
 Set `GROQ_API_KEY`, then start ChickenGPT:
 
@@ -15,14 +30,25 @@ Open `http://localhost:5173`.
 
 ## Configuration
 
-ChickenGPT sends chat messages to Groq's chat completions API using `llama-3.3-70b-versatile`.
+Required:
 
-Optional `.env` values:
+```powershell
+GROQ_API_KEY=gsk-your-key-here
+```
+
+Optional:
 
 ```powershell
 PORT=5173
-GROQ_API_KEY=gsk-your-key-here
+RATE_LIMIT_WINDOW_MS=60000
+RATE_LIMIT_MAX_REQUESTS=30
 ```
+
+Supported Groq models in the UI:
+
+- `llama-3.3-70b-versatile`
+- `llama-3.1-8b-instant`
+- `gemma2-9b-it`
 
 ## Deploy on Render
 
@@ -31,12 +57,23 @@ Use this repo as a Render Web Service, not a Static Site.
 - Build command: `npm install`
 - Start command: `npm start`
 - Health check path: `/healthz`
-- Environment variable: `GROQ_API_KEY`
+- Required environment variable: `GROQ_API_KEY`
+- Optional environment variables: `RATE_LIMIT_WINDOW_MS`, `RATE_LIMIT_MAX_REQUESTS`
 
-## Features
+The app has no new npm dependencies. Markdown, sanitization, and highlighting are loaded from CDN in the browser.
 
-- ChatGPT-style chat workspace
-- Saved local conversation history
-- System prompt, temperature, max token, and model controls
-- File text import for `.txt`, `.md`, `.json`, `.csv`, `.js`, `.ts`, `.html`, and `.css`
-- Groq backend proxy using `llama-3.3-70b-versatile`
+## Folder structure
+
+```text
+ChickenGPT/
+  public/
+    app.js
+    index.html
+    styles.css
+  .env.example
+  package.json
+  Procfile
+  README.md
+  render.yaml
+  server.js
+```
